@@ -9,11 +9,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float jumpForce = 10f;
     private float movementX;
+    private bool isGrounded;
     private Rigidbody2D myBody;
     private SpriteRenderer sr;
     private Animator anim;
     private string WALK_ANIMATION = "Walk";
     private string JUMP_ANIMATION = "Jump";
+    private string GROUND_TAG = "Ground";
 
     private void Awake()
     {
@@ -25,7 +27,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        isGrounded = false;
     }
 
     private void FixedUpdate()
@@ -49,8 +51,9 @@ public class Player : MonoBehaviour
 
     void PlayerJump()
     {
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && isGrounded == true)
         {
+            isGrounded = false;
             myBody.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
         }
     }
@@ -58,19 +61,44 @@ public class Player : MonoBehaviour
     void AnimatePlayer()
     {
 
-        if (movementX > 0)
+        if (isGrounded == true)
         {
-            anim.SetBool(WALK_ANIMATION, true);
-            sr.flipX = false;
-        }
-        else if (movementX < 0)
-        {
-            anim.SetBool(WALK_ANIMATION, true);
-            sr.flipX = true;
+            anim.SetBool(JUMP_ANIMATION, false);
+            if (movementX > 0)
+            {
+                anim.SetBool(WALK_ANIMATION, true);
+                sr.flipX = false;
+            }
+            else if (movementX < 0)
+            {
+                anim.SetBool(WALK_ANIMATION, true);
+                sr.flipX = true;
+            }
+            else
+            {
+                anim.SetBool(WALK_ANIMATION, false);
+            }
         }
         else
         {
             anim.SetBool(WALK_ANIMATION, false);
+            anim.SetBool(JUMP_ANIMATION, true);
+            if (movementX > 0)
+            {
+                sr.flipX = false;
+            }
+            else if (movementX < 0)
+            {
+                sr.flipX = true;
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag(GROUND_TAG))
+        {
+            isGrounded = true;
         }
     }
 }
