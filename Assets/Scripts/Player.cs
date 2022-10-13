@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private string WALK_ANIMATION = "Walk";
     private string JUMP_ANIMATION = "Jump";
     private string GROUND_TAG = "Ground";
+    private string ENEMY_TAG = "Enemy";
 
     private void Awake()
     {
@@ -99,6 +100,10 @@ public class Player : MonoBehaviour
         if (other.gameObject.CompareTag(GROUND_TAG))
         {
             isGrounded = true;
+        }
+        if (other.gameObject.CompareTag(ENEMY_TAG))
+        {
+            Destroy(gameObject);
         }
     }
 }
