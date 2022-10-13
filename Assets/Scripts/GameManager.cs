@@ -43,6 +43,9 @@ public class GameManager : MonoBehaviour
 
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
-
+        if (scene.name == "Gameplay")
+        {
+            Instantiate(players[_charIndex]);
+        }
     }
 }
